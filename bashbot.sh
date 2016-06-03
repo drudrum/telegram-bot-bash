@@ -51,21 +51,36 @@ while true; do {
 
   if [ $OFFSET != 1 ]; then
     echo "$OFFSET">lastOffset
+    #split MESSAGE by space to array
     msgWords=($MESSAGE)
     cmd=${msgWords[0]}
-    args=("${msgWords[@]:1}") #removed the 1st element
+    #args=("${msgWords[@]:1}") #removed the 1st element
     drive=""
     msg=""
     echo "from:$from Message:$MESSAGE"
 
-    args=( $MESSAGE )
-    cmd=${args[0]}
+    #echo "cmd0:$cmd"
+    #args=( $MESSAGE )
+    #cmd=${args[0]}
     #args=("${args[@]:1}")
-    OPTARG=${args[1]}
     #echo "cmd:$cmd"
     cmdAr=(${cmd//\@/ })
     cmd=${cmdAr[0]}
     toBot=${cmdAr[1]}
+    #echo "cmd1:$cmd toBot:$toBot"
+
+    #Replace _ to space
+    cmdAr=(${cmd//_/ })
+    cmd=${cmdAr[0]}
+    args="${cmdAr[@]:1} ${msgWords[@]:1}" #removed the 1st element
+    #remove double spaces, and trailing spaces
+    args=$(echo -e "${args}" | sed -e 's/[[:space:]]\+/ /g' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+
+    #split by spaces
+    args=( $args )
+    echo "args:${args[@]}"
+    OPTARG=${args[0]}
+
     #echo "c:$cmd t:$toBot"
     if [ ! "$toBot" == "" ] && [ ! "$toBot" == "$bot_username" ]; then
       echo "To other bot $toBot"
