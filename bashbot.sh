@@ -14,9 +14,24 @@ echo "Telegram bot dir:"$(pwd)
 . global
 #MESSAGE="$@"
 OFFSET=0
+#URL="http://mo/fgs"
+
+echo "Getting bot name"
+res=""
+result=100
+
+while [ $result -ne 0 ]; do
+  {
+    res=$(curl -f "$URL/getMe")
+    result=$?
+  } &>/dev/null
+  if [ $result -ne 0 ]; then
+    echo "curl errcode: $result"
+    sleep 15
+  fi
+done
 
 {
-  res=$(curl "$URL/getMe")
   bot_username=$(echo $res | ./JSON.sh -s | egrep '\["result","username"\]' | cut -f 2 | cut -d '"' -f 2)
 } &>/dev/null
 echo "Bot username:$bot_username"
@@ -26,7 +41,7 @@ echo "Bot username:$bot_username"
 #Starting in stand by mode
 prevActiveTime=0
 
-./sendNotify -l2 -t "Bot started"
+./sendNotify -l2 -t "Bot started username:$bot_username"
 
 while true; do {
   newMessage=0
@@ -40,6 +55,8 @@ while true; do {
         OFFSET=$(echo $res | ./JSON.sh | egrep '\["result",0,"update_id"\]' | cut -f 2)
         MESSAGE=$(echo $res | ./JSON.sh -s | egrep '\["result",0,"message","text"\]' | cut -f 2 | cut -d '"' -f 2)
         message_id=$(echo $res | ./JSON.sh | egrep '\["result",0,"message","message_id"\]' | cut -f 2 )
+        file_id=$(echo $res | ./JSON.sh | egrep '\["result",0,"message","document","file_id"\]' | cut -f 2 )
+        file_name=$(echo $res | ./JSON.sh | egrep '\["result",0,"message","document","file_name"\]' | cut -f 2 )
         echo "o:$OFFSET r:$res"
       fi
     } &>/dev/null
@@ -47,7 +64,12 @@ while true; do {
 
   curTime=$((10#`date +%s`))
   OFFSET=$((OFFSET+1))
-  #echo "$MESSAGE"
+  echo "$MESSAGE"
+  #if [ ! -z "$file_id" && ! -z "$file_name" ]; then
+  #  mkdir -p uploads
+  #  echo "fid:$file_id fn:$file_name"
+  #fi
+
 
   if [ $OFFSET != 1 ]; then
     echo "$OFFSET">lastOffset

@@ -23,20 +23,67 @@ cycleSleepStandBy=10
 standByAfter=120
 
 function send_message {
-  {
-    curl "$URL/sendMessage" -F "chat_id=$1" -F "text=$2"
-  } &>/dev/null
+  result=100
+  while [ $result -ne 0 ]; do
+    {
+      res=$(curl -f "$URL/sendMessage" -F "chat_id=$1" -F "text=$2")
+      result=$?
+    } &>/dev/null
+    if [ $result -ne 0 ]; then
+      echo "curl errcode: $result"
+      sleep 15
+    fi
+  done
 }
 function send_markdown_message {
-  {
-    curl "$URL/sendMessage" -F "chat_id=$1" -F "text=$2" -F "parse_mode=markdown"
-  } &>/dev/null
+  result=100
+  while [ $result -ne 0 ]; do
+    {
+      res=$(curl -f "$URL/sendMessage" -F "chat_id=$1" -F "text=$2" -F "parse_mode=markdown")
+      result=$?
+    } &>/dev/null
+    if [ $result -ne 0 ]; then
+      echo "curl errcode: $result"
+      sleep 15
+    fi
+  done
 }
 function send_doc {
-  {
-    curl "$URL/sendDocument" -F "chat_id=$1" -F "document=@$2"
-  } &>/dev/null
+  result=100
+  while [ $result -ne 0 ]; do
+    {
+      res=$(curl -f "$URL/sendDocument" -F "chat_id=$1" -F "document=@$2")
+      result=$?
+    } &>/dev/null
+    if [ $result -ne 0 ]; then
+      echo "curl errcode: $result"
+      sleep 15
+    fi
+  done
+}
+function getFile {
+  result=100
+  while [ $result -ne 0 ]; do
+    {
+      res=$(curl -f "$URL/getFile" -F "file_id=$1")
+      result=$?
+    } &>/dev/null
+    if [ $result -ne 0 ]; then
+      echo "curl errcode: $result"
+      sleep 15
+    fi
+  done
 }
 function send_photo() {
-  curl "$URL/sendPhoto" -F "chat_id=$1" -F "photo=@$2"
+  result=100
+  while [ $result -ne 0 ]; do
+    {
+      res=$(curl -f "$URL/sendPhoto" -F "chat_id=$1" -F "photo=@$2")
+      result=$?
+    } &>/dev/null
+    if [ $result -ne 0 ]; then
+      echo "curl errcode: $result"
+      sleep 15
+    fi
+  done
 }
