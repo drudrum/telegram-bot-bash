@@ -27,6 +27,7 @@ while [ $result -ne 0 ]; do
   } &>/dev/null
   if [ $result -ne 0 ]; then
     echo "curl errcode: $result"
+    echo "$res"
     sleep 15
   fi
 done
@@ -47,6 +48,7 @@ while true; do {
   newMessage=0
   while [ $newMessage -eq 0 ]; do
     {
+      sleep 5
       res=$(curl $URL\/getUpdates\?offset=$OFFSET\&limit=1)
       if [ ! "$res" == '{"ok":true,"result":[]}' ]; then
         newMessage=1
@@ -58,9 +60,11 @@ while true; do {
         file_id=$(echo $res | ./JSON.sh | egrep '\["result",0,"message","document","file_id"\]' | cut -f 2 )
         file_name=$(echo $res | ./JSON.sh | egrep '\["result",0,"message","document","file_name"\]' | cut -f 2 )
         echo "o:$OFFSET r:$res"
+      else
+        echo "has no messages  $res $OFFSET"
       fi
-    } &>/dev/null
-	done
+    }&>/dev/null
+  done
 
   curTime=$((10#`date +%s`))
   OFFSET=$((OFFSET+1))
