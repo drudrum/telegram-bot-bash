@@ -22,29 +22,47 @@ cycleSleepStandBy=10
 #Go to stand by mode after
 standByAfter=120
 
+retryIn=20
+maxFails=100
+
 function send_message {
+  echo "send_message"
   result=100
-  while [ $result -ne 0 ]; do
+  text=`echo "$2" | sed 's/[\r\n]//g' `
+  fails=0
+  while [ $result -ne 0 ] && [ $fails -lt $maxFails ]; do
     {
-      res=$(curl -f "$URL/sendMessage" -F "chat_id=$1" -F "text=$2")
+      res=$(curl -f "$URL/sendMessage" -F "chat_id=$1" -F "text=$text" -F "disable_notification=$3")
       result=$?
     } &>/dev/null
-    if [ $result -ne 0 ]; then
+    if [ "$1" == "" ]; then
+      echo "chat_id is empty"
+      result=0
+    elif [ $result -ne 0 ]; then
+      echo "cmd curl -f \"$URL/sendMessage\" -F \"chat_id=$1\" -F \"text=$text\" -F \"disable_notification=$3\""
       echo "curl errcode: $result"
-      sleep 15
+      echo $res
+      result=100
+      ((fails++))
+      sleep $retryIn
     fi
   done
 }
 function send_markdown_message {
+  echo "send_md_m"
   result=100
+  text=`echo "$2" | sed 's/[\r\n]//g' `
   while [ $result -ne 0 ]; do
-    {
-      res=$(curl -f "$URL/sendMessage" -F "chat_id=$1" -F "text=$2" -F "parse_mode=markdown")
+#    {
+      res=$(curl -f "$URL/sendMessage" -F "chat_id=$1" -F "text=$text" -F "parse_mode=markdown" -F "disable_notification=$3")
       result=$?
-    } &>/dev/null
+#    } &>/dev/null
     if [ $result -ne 0 ]; then
+      echo "cmd curl -f $URL/sendMessage -F \"chat_id=$1\" -F \"text=$text\" -F parse_mode=markdown"
       echo "curl errcode: $result"
-      sleep 15
+      echo "Out:$res"
+      result=100
+      sleep $retryIn
     fi
   done
 }

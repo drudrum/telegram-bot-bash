@@ -122,6 +122,7 @@ while true; do {
       #include a case from file commands
       . commands
     else
+      echo "TARGET:$TARGET"
       msg="Forbidden"
     fi
 

@@ -4,8 +4,9 @@ cd "$DIR"
 . global
 l=0
 markdown=0
+disable_notification=0
 noDesc=0
-while getopts ":h :t: :f: :l: :n :m" opt; do
+while getopts ":h :t: :f: :l: :n :m :s" opt; do
   #echo "$opt"
   case $opt in
     h)
@@ -19,6 +20,8 @@ while getopts ":h :t: :f: :l: :n :m" opt; do
       markdown=1;;
     n)
       noDesc=1;;
+    s)
+      disable_notification=1;;
     l)
       l=$((10#$OPTARG));;
     f)
@@ -29,7 +32,7 @@ while getopts ":h :t: :f: :l: :n :m" opt; do
       fi
       ;;
     ?)
-      echo "Unknown option $OPTARG"
+      echo "Unknown option $opt"
       exit 1;;
     :)
       echo "Option -$OPTARG requires an argument."
@@ -40,11 +43,11 @@ done
 
 case "$l" in
   1)
-    lDesc="Error";;
+    lDesc="Ошибка";;
   2)
-    lDesc="Danger";;
+    lDesc="Предупреждение";;
   3)
-    lDesc="Success";;
+    lDesc="";;
   *)
     lDesc="";;
 esac
@@ -57,13 +60,13 @@ for chat in $chats; do
     if [ $noDesc -eq 0 ]; then
       msg=`echo -e "$l $lDesc\n$text"`
     else
-      msg=`echo -e "$l $text"`
+      msg=`echo -e "$text"`
     fi
     echo -e "---\nchat:$chat file:$file\nText:$msg"
     if [ $markdown -eq 0 ]; then
-      send_message "$chat" "$msg"
+      send_message "$chat" "$msg" "$disable_notification"
     else
-      send_markdown_message "$chat" "$msg"
+      send_markdown_message "$chat" "$msg" "$disable_notification"
     fi
     if [ ! -z "$file" ]; then
       #filename=`basename $file`
