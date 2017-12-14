@@ -42,7 +42,9 @@ echo "Bot username:$bot_username"
 #Starting in stand by mode
 prevActiveTime=0
 
-./sendNotify -l2 -t "Bot started username:$bot_username"
+if [ $botStartedNotify -eq 1 ]; then
+  ./sendNotify -l2 -t "Bot started username:$bot_username"
+fi
 
 while true; do {
   newMessage=0

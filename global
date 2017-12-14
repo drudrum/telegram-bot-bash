@@ -21,9 +21,11 @@ cycleSleep=0
 cycleSleepStandBy=10
 #Go to stand by mode after
 standByAfter=120
+botStartedNotify=0
 
 retryIn=20
 maxFails=100
+
 
 function send_message {
   echo "send_message"
