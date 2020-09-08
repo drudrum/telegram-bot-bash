@@ -58,7 +58,7 @@ unlock - allow any users to chat with bot
 
 #Setup on debian
 ```
-git clone https://github.com/RG72/telegram-bot-bash.git
+git clone https://github.com/drudrum/telegram-bot-bash.git
 cd telegram-bot-bash
 ./installDebian <YourBotToken>
 ```
@@ -68,7 +68,7 @@ cd telegram-bot-bash
 
 #Setup on Arch linux
 ```
-git clone https://github.com/RG72/telegram-bot-bash.git
+git clone https://github.com/drudrum/telegram-bot-bash.git
 cd telegram-bot-bash
 ./installArch <YourBotToken>
 ```
