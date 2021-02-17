@@ -52,6 +52,7 @@ while true; do {
     {
       sleep 5
       res=$(curl $URL\/getUpdates\?offset=$OFFSET\&limit=1)
+      res="${res//$/\\$}"
       if [ ! "$res" == '{"ok":true,"result":[]}' ]; then
         newMessage=1
         TARGET=$(echo $res | ./JSON.sh | egrep '\["result",0,"message","chat","id"\]' | cut -f 2)
