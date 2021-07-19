@@ -43,25 +43,27 @@ done
 
 case "$l" in
   1)
-    lDesc="Ошибка";;
+    lDesc="Error";;
   2)
-    lDesc="Предупреждение";;
+    lDesc="Warning";;
   3)
-    lDesc="";;
+    lDesc="Success";;
   *)
     lDesc="";;
 esac
+
+if [ $noDesc -eq 0 ]; then
+  msg=`echo -e "$l $lDesc\n$text"`
+else
+  msg=`echo -e "$text"`
+fi
 
 chats=`ls $nlDir"/"`
 for chat in $chats; do
   nl=`cat "$nlDir/$chat"` #as text
   nl=$((10#$nl))  #as number
   if [ $l -le $nl ]; then
-    if [ $noDesc -eq 0 ]; then
-      msg=`echo -e "$l $lDesc\n$text"`
-    else
-      msg=`echo -e "$text"`
-    fi
+    
     echo -e "---\nchat:$chat file:$file\nText:$msg"
     if [ $markdown -eq 0 ]; then
       send_message "$chat" "$msg" "$disable_notification"

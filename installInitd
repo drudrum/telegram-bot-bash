@@ -18,3 +18,8 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
   echo "$line">>"$tf"
 done < "$cwd/tBot.debian"
 cat "$tf"
+
+sendNotifyScript="/usr/bin/sendNotify"
+echo -e "#!/bin/bash\ncd \"$cwd\"\n\"./sendNotify\" \"\$@\"" > "$sendNotifyScript"
+chmod +x "$sendNotifyScript"
+chmod 755 "$sendNotifyScript"

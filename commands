@@ -26,7 +26,10 @@ case $cmd in
     prevActiveTime=$curTime
   ;;
   '/s'|'sensors'|'/sensors')msg=`sensors | sed -r "s/\s|\)+//g" | sed -r "s/\(high=|\(min=/\//" | sed -r "s/\,crit=|\,max=/\//"`;;
-  '/free') msg=`free -h`;;
+  '/free') 
+    msg=`free -h`
+    prevActiveTime=$curTime
+    ;;
   '/pvs') msg=`pvs`;;
   '/ifconfig') msg=`ifconfig`;;
   '/vgs') msg=`vgs`;;
@@ -41,7 +44,7 @@ case $cmd in
       msg=`smartctl -a /dev/$drive`
     fi
     ;;
-  '/df') msg=`df -h | sed -r "s/^/\n/" | sed -r "s/\s+/\n/g"`;;
+  '/df') msg=`df -h | grep /dev/vda | sed -r "s/^/\n/" | sed -r "s/\s+/ /g"`;;
   '/nl'|'/notifyLevel')
     if [ "$OPTARG" == "" ]; then
       msg="Notify level is: "`cat "$nlFile"`
@@ -56,10 +59,15 @@ case $cmd in
         msg="Level must be bigger or equal 0"
       fi
     fi
+    prevActiveTime=$curTime
   ;;
   *)
     if [ -f "$cutomCmdDir/$cmd" ]; then
       . "$cutomCmdDir/$cmd"
+      prevActiveTime=$curTime
+      cd "$ROOTDIR"
+    else
+      msg="Unknown cmd:$cmd"
     fi
   ;;
 esac

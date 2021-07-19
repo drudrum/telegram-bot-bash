@@ -9,12 +9,11 @@
 
 # This file is public domain in the USA and all free countries.
 # If you're in Europe, and public domain does not exist, then haha.
+ROOTDIR=$(pwd)
+echo "Telegram bot dir:"$ROOTDIR
 
-echo "Telegram bot dir:"$(pwd)
 . global
-#MESSAGE="$@"
 OFFSET=0
-#URL="http://mo/fgs"
 
 echo "Getting bot name"
 res=""
@@ -36,8 +35,6 @@ done
   bot_username=$(echo $res | ./JSON.sh -s | egrep '\["result","username"\]' | cut -f 2 | cut -d '"' -f 2)
 } &>/dev/null
 echo "Bot username:$bot_username"
-
-#buttons="{\"keyboard\":[[\"sensors\",\"raid_status\"]],\"one_time_keyboard\":true}"
 
 #Starting in stand by mode
 prevActiveTime=0
@@ -72,31 +69,19 @@ while true; do {
   curTime=$((10#`date +%s`))
   OFFSET=$((OFFSET+1))
   echo "$MESSAGE"
-  #if [ ! -z "$file_id" && ! -z "$file_name" ]; then
-  #  mkdir -p uploads
-  #  echo "fid:$file_id fn:$file_name"
-  #fi
-
 
   if [ $OFFSET != 1 ]; then
     echo "$OFFSET">lastOffset
     #split MESSAGE by space to array
     msgWords=($MESSAGE)
     cmd=${msgWords[0]}
-    #args=("${msgWords[@]:1}") #removed the 1st element
     drive=""
     msg=""
     echo "from:$from Message:$MESSAGE"
 
-    #echo "cmd0:$cmd"
-    #args=( $MESSAGE )
-    #cmd=${args[0]}
-    #args=("${args[@]:1}")
-    #echo "cmd:$cmd"
     cmdAr=(${cmd//\@/ })
     cmd=${cmdAr[0]}
     toBot=${cmdAr[1]}
-    #echo "cmd1:$cmd toBot:$toBot"
 
     #Replace _ to space
     cmdAr=(${cmd//_/ })

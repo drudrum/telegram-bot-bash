@@ -1,11 +1,11 @@
-#bashbot
+# bashbot
 A Telegram bot written in bash.
 
-#Requiment:
+# Requiment:
 * curl
 * bash
 
-#Bot commands:
+# Bot commands:
 - `/s` sensors
 - `/ss` smbstatus
 - `/free` memory status
@@ -26,14 +26,14 @@ A Telegram bot written in bash.
  - *4* - Success events
  - *...* - ...
 
-#Send notify from server
+# Send notify from server
 You can send notify from your servers, using script sendNotify
 examples:
 - sendNotify -l1 -t "Critical error at service ABC"
-- /dir1/dir2/sendNotify -l3 -t "User vasya login at service samba"
+- sendNotify -l3 -t "User vasya login at service samba"
 Default notify level for new chat is 0. To change notify level use `/nl 3`.
 
-#Setup telegram commands
+# Setup telegram commands
 - Say `/setcommands` to botfather
 - Choose your bot
 - Send following description
@@ -52,28 +52,31 @@ lock - lock from new chats
 unlock - allow any users to chat with bot
 ```
 
-#Telegram token
+# Telegram token
 - Put your bot token to file "token". You can use install script.
 - One bot(process) - One token
 
-#Setup on debian
+# Setup to initd 
 ```
 git clone https://github.com/drudrum/telegram-bot-bash.git
 cd telegram-bot-bash
-./installDebian <YourBotToken>
+./installInitd <YourBotToken>
 ```
-- InstallDebian script create init script */etc/init.d/tBot*
+- InstallInitd script creates */usr/lib/systemd/system/tBot.service*, */usr/bin/sendNotify*
 - Logs placed at /var/log/tBot
 - Manual start run `/etc/init.d/tBot start`
 
-#Setup on Arch linux
+# Setup to systemd (recommeded)
 ```
 git clone https://github.com/drudrum/telegram-bot-bash.git
 cd telegram-bot-bash
-./installArch <YourBotToken>
+./installSystemd <YourBotToken>
 ```
-- installArch create */usr/lib/systemd/system/tBot.service*
+- installInitd creates */usr/lib/systemd/system/tBot.service*, */usr/bin/sendNotify*
 - Manual start `systemctl start tBot`
 - Enable to system boot `systemctl enable tBot`
+
+# Custom commands
+  You can place your commands to [cmds](cmds/) dir
 
 Uses [json.sh](https://github.com/dominictarr/JSON.sh).

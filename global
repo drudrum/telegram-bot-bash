@@ -26,12 +26,11 @@ botStartedNotify=0
 retryIn=20
 maxFails=100
 
-
 function send_message {
-  echo "send_message"
   result=100
   text=`echo "$2" | sed 's/[\r\n]//g' `
   fails=0
+  echo "send_message fails:$fails text:$text chat:$1"
   while [ $result -ne 0 ] && [ $fails -lt $maxFails ]; do
     {
       res=$(curl -f "$URL/sendMessage" -F "chat_id=$1" -F "text=$text" -F "disable_notification=$3")
@@ -51,22 +50,28 @@ function send_message {
   done
 }
 function send_markdown_message {
-  echo "send_md_m"
   result=100
   text=`echo "$2" | sed 's/[\r\n]//g' `
-  while [ $result -ne 0 ]; do
-#    {
+  fails=0
+  echo "send_markdown_message fails:$fails text:$text chat:$1"
+  while [ $result -ne 0 ] && [ $fails -lt $maxFails ]; do
+     {
       res=$(curl -f "$URL/sendMessage" -F "chat_id=$1" -F "text=$text" -F "parse_mode=markdown" -F "disable_notification=$3")
       result=$?
-#    } &>/dev/null
-    if [ $result -ne 0 ]; then
-      echo "cmd curl -f $URL/sendMessage -F \"chat_id=$1\" -F \"text=$text\" -F parse_mode=markdown"
+     } &>/dev/null
+    if [ "$1" == "" ]; then
+      echo "chat_id is empty"
+      result=0
+    elif [ $result -ne 0 ]; then
+      echo "curl -f \"$URL/sendMessage\" -F \"chat_id=$1\" -F \"text=$text\" -F \"parse_mode=markdown\" -F \"disable_notification=$3\""
       echo "curl errcode: $result"
-      echo "Out:$res"
+      echo $res
       result=100
+      ((fails++))
       sleep $retryIn
     fi
   done
+  echo "finish send markdown"
 }
 function send_doc {
   result=100
