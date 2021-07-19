@@ -4,8 +4,29 @@ A Telegram bot written in bash.
 # Requiment:
 * curl
 * bash
+* Telegram bot token (@botfather)
 
-# Bot commands:
+# Setup systemd (recommeded)
+```
+git clone https://github.com/drudrum/telegram-bot-bash.git
+cd telegram-bot-bash
+./installSystemd <YourBotToken>
+```
+- installInitd creates */usr/lib/systemd/system/tBot.service*, */usr/bin/sendNotify*
+- Manual start `systemctl start tBot`
+- Enable to system boot `systemctl enable tBot`
+
+# Alternative setup initd 
+```
+git clone https://github.com/drudrum/telegram-bot-bash.git
+cd telegram-bot-bash
+./installInitd <YourBotToken>
+```
+- InstallInitd script creates */usr/lib/systemd/system/tBot.service*, */usr/bin/sendNotify*
+- Logs placed at /var/log/tBot
+- Manual start run `/etc/init.d/tBot start`
+
+# Default Bot commands:
 - `/s` sensors
 - `/ss` smbstatus
 - `/free` memory status
@@ -27,11 +48,10 @@ A Telegram bot written in bash.
  - *...* - ...
 
 # Send notify from server
-You can send notify from your servers, using script sendNotify
+You can send notify using script sendNotify
 examples:
-- sendNotify -l1 -t "Critical error at service ABC"
-- sendNotify -l3 -t "User vasya login at service samba"
-Default notify level for new chat is 0. To change notify level use `/nl 3`.
+- `sendNotify -l1 -t "Critical error at service ABC"`
+- `sendNotify -l3 -t "User vasya login at service samba"`
 
 # Setup telegram commands
 - Say `/setcommands` to botfather
@@ -55,26 +75,6 @@ unlock - allow any users to chat with bot
 # Telegram token
 - Put your bot token to file "token". You can use install script.
 - One bot(process) - One token
-
-# Setup to initd 
-```
-git clone https://github.com/drudrum/telegram-bot-bash.git
-cd telegram-bot-bash
-./installInitd <YourBotToken>
-```
-- InstallInitd script creates */usr/lib/systemd/system/tBot.service*, */usr/bin/sendNotify*
-- Logs placed at /var/log/tBot
-- Manual start run `/etc/init.d/tBot start`
-
-# Setup to systemd (recommeded)
-```
-git clone https://github.com/drudrum/telegram-bot-bash.git
-cd telegram-bot-bash
-./installSystemd <YourBotToken>
-```
-- installInitd creates */usr/lib/systemd/system/tBot.service*, */usr/bin/sendNotify*
-- Manual start `systemctl start tBot`
-- Enable to system boot `systemctl enable tBot`
 
 # Custom commands
   You can place your commands to [cmds](cmds/) dir
